@@ -6,6 +6,7 @@
     jmp switch_isr  ; PCI2 interrupt service routine
 .org 0x034
 
+#include "AD_config.asm"
 #include "LCD_control.asm"
 
 init:
