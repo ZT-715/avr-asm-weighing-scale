@@ -30,12 +30,6 @@ LCD_init:
     clr r16
     out DDRB, r16  
 
-    ser r16
-    out DDRC, r16
-
-    clr r16
-    out PORTC, r16
-
     ; PCI for PORTB
     ldi r16, (1 << PCIE0) 
     sts PCICR , r16
@@ -100,53 +94,15 @@ ret
 LCD_select:
     clr select
 
-    cpi row, 0
-    breq LED1
+;    cpi row, 0
+;    breq LED1
+;
+;    cpi row, 1
+;    breq LED2
+;
+;    cpi row, 2
+;    breq LED3
 
-    cpi row, 1
-    breq LED2
-
-    cpi row, 2
-    breq LED3
-
-    ret
-
-    LED1:
-        in r16, PINC
-        ldi r17, 1
-        eor r16, r17
-        out PORTC, r16
-
-        ser r16
-        sbic PINC, 0
-        clr r16
-        
-        rjmp LCD_select1
-
-    LED2:
-        in r16, PINC
-        ldi r17, 2
-        eor r16, r17
-        out PORTC, r16
-        
-        ser r16
-        sbic PINC, 1
-        clr r16
-        
-        rjmp LCD_select1
-
-    LED3:
-        in r16, PINC
-        ldi r17, 4
-        eor r16, r17
-        out PORTC, r16
-        
-        ser r16
-        sbic PINC, 2
-        clr r16
-        
-    LCD_select1:
-        rcall LCD_mark
     ret
 
 
