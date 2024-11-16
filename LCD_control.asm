@@ -24,21 +24,9 @@
 .equ LINHA_4 = 0x54
 
 .cseg
-.org 0x00                
-    rjmp init          
+DISPLAY_TXT: .db " Peso: 00.00 Kg",0," TARE",0," F2",0," F3",0,0,0
 
-.org 0x0006
-    rjmp switch_isr  ; Jump to the pin change interrupt service routine
-
-DISPLAY_TXT: .db " LED 1: 0",0," LED 2: 0",0," LED 3: 0",0,0
-
-
-init:
-    ldi r20, high(RAMEND)
-    sts SPH, r20
-    ldi r20, low(RAMEND)
-    sts SPL, r20
-
+LCD_init:
     clr r16
     out DDRB, r16  
 
@@ -58,7 +46,7 @@ init:
     ldi r16, 0xFF
     out DDRD, r16
 
-    rcall LCD_init
+    rcall LCD_conn
     
     rcall delay_1s
 
@@ -70,22 +58,27 @@ init:
     rcall LCD_command
     rcall delay_45ms
 
-    ldi zh, high(DISPLAY_TXT)
+    ldi zh, high(DISPLAY_TXT << 1)
     ldi zl, low(DISPLAY_TXT << 1)
+
+    ldi r16, 0b0000_0111 
+    out PORTB, r16
 
     ldi row, 0
     ldi column, 0
-
-    ldi r16, 0b0000_0111
-    out PORTB, r16
 
 screen0:
     mov r16, row
     ldi r17, 0
     rcall LCD_position_cursor
+    
     inc row
-    cpi row, 4
-    breq main
+
+    lpm r16, Z
+    ldi r17, 0
+    cpse r16, r17 ; se fim de linha duplo
+    rjmp screen0_loop
+    ret
 
 screen0_loop:
     lpm r16, Z+
@@ -95,33 +88,6 @@ screen0_loop:
     
     rjmp screen0_loop
 
-main:
-    ldi row, 0
-    ldi column, 0
-    ldi r17, 0
- main_loop:
-    cpi select, 0
-    brne LCD_select
-
-    cpi row_change, 0
-    brne LCD_row_change
-
-    mov r16, row
-    ldi r17, 8
-    rcall LCD_position_cursor
-
-    sei
-    rcall delay_5ms
-    cli
-
-    wait_release:
-        in r16, PINB
-        andi r16, 0b0000_0111
-        cpi r16, 0b0000_0111
-        brne wait_release
-
-rjmp main_loop
-
 LCD_row_change:
     sbrc row_change, 0
     inc row
@@ -129,7 +95,7 @@ LCD_row_change:
     dec row
     andi row, 0b0000_0011
     clr row_change
-    rjmp main_loop
+ret
 
 LCD_select:
     clr select
@@ -143,7 +109,7 @@ LCD_select:
     cpi row, 2
     breq LED3
 
-    rjmp main_loop
+    ret
 
     LED1:
         in r16, PINC
@@ -181,14 +147,17 @@ LCD_select:
         
     LCD_select1:
         rcall LCD_mark
-        rjmp main_loop
+    ret
+
 
 LCD_mark:
     cpi r16, 0
     breq LED_X
+
     LED_V:
     ldi r16, '0'
     rjmp write_mark
+
     LED_X:
         ldi r16, '1'
     write_mark:
@@ -230,7 +199,7 @@ LCD_pos:
     rcall LCD_command
     ret
 
-LCD_init:
+LCD_conn:
     rcall delay_45ms
     ldi r16, 0b0011_0000
     rcall LCD_4bits
@@ -277,7 +246,7 @@ LCD_char:
     lsl r16
     lsl r16
     lsl r16
-    lsl r16 ; optimize switchil 4 'lsl' by nibble 'swap'
+    lsl r16 ; change switch with 4 'lsl' by nibble 'swap'
     andi r16, 0b1111_0000
     rcall LCD_4bits
     cbi PORTD, RS
