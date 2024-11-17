@@ -3,8 +3,8 @@
 
 .equ input_pin_C = 0
 
-;avcc vs. pinc
-.equ ADMUX_config = (0<<refs1)|(1<<refs0)|input_pin_C
+;avcc vs. pinc and left alingned output
+.equ ADMUX_config = (0<<refs1)|(1<<refs0)|(1<<adlar)|input_pin_C
 
 ; start AD | enable AD | automatic trigger enable
 .equ ADCSRA_config  = (0<<ADSC)|(1<<ADEN)|(1<<ADATE)| \
@@ -22,8 +22,6 @@ AD_config:
 ret
 
 AD_read:
-    push r16
-
     lds r16, ADCSRA
     sbr r16, (1<<ADSC)
     sts ADCSRA, r16
@@ -34,13 +32,10 @@ AD_read:
         rjmp wait_AD
 
     lds r16, ADCL
-    mov ADL,r16
-    lds r16, ADCH
-    mov ADH, r16
+    lds r17, ADCH
 
-    lds r16, ADCSRA
-    ori r16, (1<<ADIF)
-    sts ADCSRA, r16
+    lds r18, ADCSRA
+    ori r18, (1<<ADIF)
+    sts ADCSRA, r18
 
-    pop r16
 ret
