@@ -8,53 +8,45 @@
 
 #include "AD_config.asm"
 #include "LCD_control.asm"
+#include "Switches.asm"
 
 init:
 ;stack_init
     ldi r20, high(RAMEND)
-    sts SPH, r20
+    out SPH, r20
     ldi r20, low(RAMEND)
-    sts SPL, r20
+    out SPL, r20
 
+    call switch_config
     call AD_config
     call LCD_init
 
-
 main:
-    ldi row, 0
+    ldi row, 2
     ldi column, 0
-    ldi r20, 0
+    clr r15
 
 main_loop:
-    cpse select, r20
-    call LCD_select
-
-    cpse row_change, r20
-    call LCD_row_change
-
-    ; write wheight
-    ldi r16, 0 ; row
-    ldi r17, 7 ; column
-    call LCD_position_cursor
-
-    call AD_read
-    call dubble_dabble
-    call LCD_write_wheight
-    
     mov r16, row
-    ldi r17, 8
+    mov r17, column
     call LCD_position_cursor
+
+    cpse switch_toggled, r15
+    call LCD_switch_handle
 
     sei
     rcall delay_5ms
     cli
 
-    wait_release:
-        in r16, PINB
-        andi r16, 0b0000_0111
-        cpi r16, 0b0000_0111
-        brne wait_release
+; Weight
+    ldi r16, 0
+    ldi r17, 7
+    call LCD_position_cursor
 
+    call AD_read
+    call dubble_dabble
+    call LCD_write_weight
+    
 rjmp main_loop
 
 ; dubble_dabble for 10 bits left justfied
@@ -65,7 +57,7 @@ dubble_dabble:
     push r27
     clr r26
     clr r27
-    ldi r20, 10
+    ldi r20, 11
     
 dd_loop:
         lsl r16
@@ -123,8 +115,9 @@ dd_loop:
     pop r26
     pop r20
  ret
+
 ; Valores em r17 (high) e r16 (low)
-LCD_write_wheight:
+LCD_write_weight:
     movw r19:r18, r17:r16
 
     swap r17
@@ -134,8 +127,6 @@ LCD_write_wheight:
     andi r19, 0x0F ; 2nd
     andi r16, 0x0F ; 3rd
     andi r18, 0x0F ; 4th 
-
-    push r20
     
     ldi r20, '0'
     add r16, r20
@@ -156,5 +147,38 @@ LCD_write_wheight:
     mov r16, r18
     call LCD_char
 
-    pop r20
 ret
+
+LCD_switch_handle:
+    
+    in r16, pinb
+    andi r16, 0b0000_0111
+    cpi r16, 0b0000_0111
+    brne LCD_switch_handle
+
+    sbrc switch_toggled, 0
+    ldi r16, 'A'
+    sbrc switch_toggled, 1
+    ldi r16, 'B'
+    sbrc switch_toggled, 2
+    ldi r16, 'C'
+
+    clr switch_toggled
+
+    call lcd_char
+end_sh:
+ret
+
+LCD_select:
+
+;    cpi row, 0
+;    breq LED1
+;
+;    cpi row, 1
+;    breq LED2
+;
+;    cpi row, 2
+;    breq LED3
+
+    ret
+
