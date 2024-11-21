@@ -3,7 +3,7 @@
 
 .equ input_pin_C = 0
 
-;avcc vs. pinc and left alingned output
+;avcc vs. pinc and right alingned output
 .equ ADMUX_config = (0<<refs1)|(1<<refs0)|(1<<adlar)|input_pin_C
 
 ; start AD | enable AD | automatic trigger enable

@@ -10,6 +10,10 @@
 #include "LCD_control.asm"
 #include "Switches.asm"
 
+.def TAREL = r28 
+.def TAREH = r29 
+.def TARE_SIGN = r24 
+
 init:
 ;stack_init
     ldi r20, high(RAMEND)
@@ -26,6 +30,9 @@ main:
     ldi column, 0
     clr r15
 
+    clr TAREH
+    clr TAREL
+
 main_loop:
     mov r16, row
     mov r17, column
@@ -40,10 +47,11 @@ main_loop:
 
 ; Weight
     ldi r16, 0
-    ldi r17, 7
+    ldi r17, 6
     call LCD_position_cursor
 
     call AD_read
+    call AD_tare
     call dubble_dabble
     call LCD_write_weight
     
@@ -57,7 +65,7 @@ dubble_dabble:
     push r27
     clr r26
     clr r27
-    ldi r20, 11
+    ldi r20, 10
     
 dd_loop:
         lsl r16
@@ -118,6 +126,12 @@ dd_loop:
 
 ; Valores em r17 (high) e r16 (low)
 LCD_write_weight:
+
+    push r16
+    mov r16, TARE_sign
+    call LCD_char
+    pop r16
+
     movw r19:r18, r17:r16
 
     swap r17
@@ -157,17 +171,46 @@ LCD_switch_handle:
     brne LCD_switch_handle
 
     sbrc switch_toggled, 0
-    ldi r16, 'A'
+    call tare
     sbrc switch_toggled, 1
     ldi r16, 'B'
     sbrc switch_toggled, 2
     ldi r16, 'C'
-
-    clr switch_toggled
-
     call lcd_char
 end_sh:
+    clr switch_toggled
 ret
+
+tare:
+    call AD_read
+    movw TAREH:TAREL, r17:r16
+ret
+
+AD_tare:
+    ldi TARE_SIGN, ' '
+    
+    cp r17, TAREH
+    brlo tare_negative
+
+    movw r19:r18, r17:r16
+    
+    sub r18, TAREL
+    sbc r19, TAREH
+
+    brvs tare_negative
+    
+    movw r17:r16, r19:r18
+    ret
+
+tare_negative:
+    movw r19:r18, r17:r16
+    movw r17:r16, TAREH:TAREL
+    sub r16, r18
+    sbc r17, r19
+
+    ldi TARE_SIGN, '-'
+ret
+
 
 LCD_select:
 
