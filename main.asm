@@ -187,22 +187,20 @@ ret
 
 AD_tare:
     ldi TARE_SIGN, ' '
-    
-    cp r17, TAREH
+
+
+    cp r16, TAREL
+    cpc  r17, TAREH
     brlo tare_negative
 
-    movw r19:r18, r17:r16
+tare_positve:    
+    sub r16, TAREL
+    sbc r17, TAREH
     
-    sub r18, TAREL
-    sbc r19, TAREH
-
-    brvs tare_negative
-    
-    movw r17:r16, r19:r18
     ret
 
 tare_negative:
-    movw r19:r18, r17:r16
+    movw r19:r18, r17:r16    
     movw r17:r16, TAREH:TAREL
     sub r16, r18
     sbc r17, r19
