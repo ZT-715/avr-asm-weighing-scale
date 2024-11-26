@@ -9,7 +9,7 @@
     jmp TOV0_isr
     
 .org 0x02A
-    ;jmp ADC_isr
+    jmp ADC_isr
 .org 0x034
 
 #include "AD_config.asm"
@@ -28,10 +28,10 @@ init:
     ldi r20, low(RAMEND)
     out SPL, r20
 
+    call timer0_config
     call switch_config
     call AD_config
     call LCD_init
-    call timer0_config
 
 main:
     ldi row, 2
@@ -43,11 +43,6 @@ main:
 
     sei
 main_loop:
-
-    mov r16, row
-    mov r17, column
-    call LCD_position_cursor
-
     cpse switch_toggled, r15
     call LCD_switch_handle
 
@@ -63,10 +58,16 @@ update_weight:
     ldi r17, 6
     call LCD_position_cursor
 
-    call AD_read
+    ;call AD_read
+
+    movw r17:r16, ADH:ADL
     call AD_tare
     call dubble_dabble
     call LCD_write_weight 
+
+    mov r16, row
+    mov r17, column
+    call LCD_position_cursor
 
     clr tc0_overflow
 ret
@@ -237,4 +238,3 @@ LCD_select:
 ;    breq LED3
 
     ret
-

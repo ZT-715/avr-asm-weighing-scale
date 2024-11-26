@@ -1,4 +1,4 @@
-.def ADH = r1
+.def ADH = r3
 .def ADL = r2
 
 .equ input_pin_C = 0
@@ -6,9 +6,11 @@
 ;avcc vs. pinc and right alingned output
 .equ ADMUX_config = (0<<refs1)|(1<<refs0)|(1<<adlar)|input_pin_C
 
-; start AD | enable AD | automatic trigger enable
-.equ ADCSRA_config  = (0<<ADSC)|(1<<ADEN)|(1<<ADATE)| \
+; start AD | enable AD | automatic trigger enable | Interrupt Enable
+.equ ADCSRA_config  = (1<<ADSC)|(1<<ADEN)|(1<<ADATE)|(1<<ADIE)| \
                       (1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0)
+
+.equ ADCSRB_config = (1<<ADTS2)|(0<<ADTS1)|(0<<ADTS0)
 .cseg
 
 AD_config:
@@ -17,11 +19,17 @@ AD_config:
 
     ldi r16, ADMUX_config
     sts ADMUX, r16
+    
     ldi r16, ADCSRA_config
     sts ADCSRA, r16
+   
+    ldi r16, ADCSRB_config
+    sts ADCSRB, r16
 ret
 
 AD_read:
+    cli
+
     lds r16, ADCSRA
     sbr r16, (1<<ADSC)
     sts ADCSRA, r16
@@ -37,5 +45,11 @@ AD_read:
     lds r18, ADCSRA
     ori r18, (1<<ADIF)
     sts ADCSRA, r18
-
+    
+    sei
 ret
+
+ADC_isr:
+    lds ADL, ADCL
+    lds ADH, ADCH
+reti
