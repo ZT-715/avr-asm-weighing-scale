@@ -67,6 +67,8 @@ update_weight:
     call AD_tare
     call dubble_dabble
     call LCD_write_weight 
+
+    clr tc0_overflow
 ret
 
 ; dubble_dabble for 10 bits left justfied
