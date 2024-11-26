@@ -1,7 +1,6 @@
 .cseg
 .org 0x00                
     jmp init          
-
 .org 0x06
     jmp switch_isr  ; PCI2 interrupt service routine
 .org 0x034
@@ -24,7 +23,6 @@ init:
     call switch_config
     call AD_config
     call LCD_init
-
 main:
     ldi row, 2
     ldi column, 0
@@ -168,7 +166,7 @@ LCD_switch_handle:
     in r16, pinb
     andi r16, 0b0000_0111
     cpi r16, 0b0000_0111
-    brne LCD_switch_handle
+    brne end_sh
 
     sbrc switch_toggled, 0
     call tare
@@ -177,8 +175,9 @@ LCD_switch_handle:
     sbrc switch_toggled, 2
     ldi r16, 'C'
     call lcd_char
-end_sh:
+    
     clr switch_toggled
+end_sh:
 ret
 
 tare:
