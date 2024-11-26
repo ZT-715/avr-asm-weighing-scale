@@ -3,11 +3,19 @@
     jmp init          
 .org 0x06
     jmp switch_isr  ; PCI2 interrupt service routine
+.org 0x01C
+    jmp OCR0A_isr
+    jmp OCR0B_isr
+    jmp TOV0_isr
+    
+.org 0x02A
+    ;jmp ADC_isr
 .org 0x034
 
 #include "AD_config.asm"
 #include "LCD_control.asm"
 #include "Switches.asm"
+#include "timer.asm"
 
 .def TAREL = r28 
 .def TAREH = r29 
@@ -23,6 +31,8 @@ init:
     call switch_config
     call AD_config
     call LCD_init
+    call timer0_config
+
 main:
     ldi row, 2
     ldi column, 0
@@ -31,7 +41,9 @@ main:
     clr TAREH
     clr TAREL
 
+    sei
 main_loop:
+
     mov r16, row
     mov r17, column
     call LCD_position_cursor
@@ -39,11 +51,14 @@ main_loop:
     cpse switch_toggled, r15
     call LCD_switch_handle
 
-    sei
-    rcall delay_5ms
-    cli
-
 ; Weight
+
+    cpse tc0_overflow, r15; sample time 16 KHz
+    call update_weight
+
+rjmp main_loop
+
+update_weight:
     ldi r16, 0
     ldi r17, 6
     call LCD_position_cursor
@@ -51,9 +66,8 @@ main_loop:
     call AD_read
     call AD_tare
     call dubble_dabble
-    call LCD_write_weight
-    
-rjmp main_loop
+    call LCD_write_weight 
+ret
 
 ; dubble_dabble for 10 bits left justfied
 ; load I/O in r17 (high) and r16 (low)
