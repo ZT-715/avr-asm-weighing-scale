@@ -62,6 +62,7 @@ update_weight:
 
     movw r17:r16, ADH:ADL
     call AD_tare
+        
     call dubble_dabble
     call LCD_write_weight 
 
@@ -80,7 +81,7 @@ dubble_dabble:
     push r27
     clr r26
     clr r27
-    ldi r20, 10
+    ldi r20, 16
     
 dd_loop:
         lsl r16
@@ -167,9 +168,9 @@ LCD_write_weight:
 
     mov r16, r17
     call LCD_char
-    mov r16, r19
-    call LCD_char
     ldi r16, '.'    
+    call LCD_char
+    mov r16, r19
     call LCD_char
     pop r16
     call LCD_char

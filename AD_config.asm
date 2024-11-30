@@ -4,7 +4,7 @@
 .equ input_pin_C = 0
 
 ;avcc vs. pinc and right alingned output
-.equ ADMUX_config = (0<<refs1)|(1<<refs0)|(1<<adlar)|input_pin_C
+.equ ADMUX_config = (0<<refs1)|(1<<refs0)|(0<<adlar)|input_pin_C
 
 ; start AD | enable AD | automatic trigger enable | Interrupt Enable
 .equ ADCSRA_config  = (1<<ADSC)|(1<<ADEN)|(1<<ADATE)|(1<<ADIE)| \
@@ -31,7 +31,7 @@ AD_read:
     cli
 
     lds r16, ADCSRA
-    sbr r16, (1<<ADSC)
+    ori r16, (1<<ADSC)
     sts ADCSRA, r16
     
     wait_AD:
