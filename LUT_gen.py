@@ -8,9 +8,11 @@ LUT = [x * step for x in range(0, space)]
 with open("LUT.asm", "w") as file:
     file.write(".cseg\nLUT_kg: .db ")
     for i in LUT:
-        file.write('"' + str(round(i,3))+ 'A", ')
-    file.write('"OVRW-A"\nLUT_lb: .db ')
+        kg_string = f'"{str(round(i, 3)).ljust(6)}", '
+        file.write(kg_string)
+    file.write('"OVRW-"\nLUT_lb: .db ')
     for i in LUT:
-        file.write('"' + str(round(i* 2.20462,3)) + 'A", ')
-    file.write('"OVRW-A"\n')
+        lb_string = f'"{str(round(i * 2.20462, 3)).ljust(6)}", '
+        file.write(lb_string)
+    file.write('"OVRW-"\n')
 
