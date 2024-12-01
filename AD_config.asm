@@ -9,7 +9,7 @@
 
 ; start AD | enable AD | automatic trigger enable | Interrupt Enable
 .equ ADCSRA_config  = (1<<ADSC)|(1<<ADEN)|(1<<ADATE)|(1<<ADIE)| \
-                      (0<<ADPS2)|(1<<ADPS1)|(1<<ADPS0)
+                      (1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0)
 
 .equ ADCSRB_config = (1<<ADTS2)|(0<<ADTS1)|(0<<ADTS0)
 .cseg
