@@ -21,7 +21,7 @@
 .equ LINHA_4 = 0x54
 
 .cseg
-DISPLAY_TXT: .db " Peso: 000000  kg",0," ",0," ",0," TARE    lb      kg ",0,0
+DISPLAY_TXT: .db " Peso: 000000  kg",0," ",0," ",0," TARA    lb      kg ",0,0
 
 LCD_init:
     ldi r16, 0xFF
