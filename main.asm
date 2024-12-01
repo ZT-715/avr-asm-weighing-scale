@@ -49,7 +49,7 @@ main_loop:
     call LCD_switch_handle
 
 ; Weight    
-    cpse ad_read_flag, r15; sample time 16 KHz
+    cpse ad_read_flag, r15
     call update_weight
 
 rjmp main_loop
