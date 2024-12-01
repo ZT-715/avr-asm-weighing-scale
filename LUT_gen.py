@@ -6,10 +6,10 @@ step = end_value / space
 LUT = [x * step for x in range(0, space)]
 
 with open("LUT.asm", "w") as file:
-    file.write(".cseg\nLUT_kg:\n")
+    file.write(".cseg\nLUT_kg: .db ")
     for i in LUT:
         file.write('"' + str(round(i,3))+ 'A", ')
-    file.write('"OVRW-A"\nLUT_lb:\n')
+    file.write('"OVRW-A"\nLUT_lb: .db ')
     for i in LUT:
         file.write('"' + str(round(i* 2.20462,3)) + 'A", ')
     file.write('"OVRW-A"\n')
