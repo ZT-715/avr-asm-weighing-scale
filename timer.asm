@@ -1,23 +1,23 @@
-.equ TCCR0A_config = 0
-.equ TCCR0B_config = (1 << CS02)|(0 << CS01)|(1 << CS00)
-.equ TIMSK0_config = (1 << TOIE0)
+.equ TCCR1A_config = 0                  ; Normal mode
+.equ TCCR1B_config = (1 << CS12)        ; Prescaler = 256
+.equ TIMSK1_config = (1 << TOIE1)       ; overflow interrupt
 
-timer0_config:
-    ldi r16, TCCR0A_config
-    out TCCR0A, r16
+; Timer1 Configuration Routine
+timer1_config:
+    ldi r16, TCCR1A_config
+    sts TCCR1A, r16                    
 
-    ldi r16, TCCR0B_config
-    out TCCR0B, r16
+    ldi r16, TCCR1B_config
+    sts TCCR1B, r16                    
 
-    ldi r16, TIMSK0_config
-    sts TIMSK0, r16
+    ldi r16, TIMSK1_config
+    sts TIMSK1, r16                    
 
-OCR0A_isr:
-reti
+    clr r16                            
+    sts TCNT1H, r16
+    sts TCNT1L, r16
 
-OCR0B_isr:
-reti
+    ret                                
 
-TOV0_isr:
-    
-reti
+TOV1_isr:
+    reti                               

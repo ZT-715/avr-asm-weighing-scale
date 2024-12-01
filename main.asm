@@ -3,10 +3,8 @@
     jmp init          
 .org 0x0006
     jmp switch_isr  ; PCI2 interrupt service routine
-.org 0x001C
-    jmp OCR0A_isr
-    jmp OCR0B_isr
-    jmp TOV0_isr
+.org 0x001A
+    jmp TOV1_isr
 .org 0x002A
     jmp ADC_isr
 .org 0x0034
@@ -28,7 +26,7 @@ init:
     ldi r20, low(RAMEND)
     out SPL, r20
 
-    call timer0_config
+    call timer1_config
     call switch_config
     call AD_config
     call LCD_init
