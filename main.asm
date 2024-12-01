@@ -48,9 +48,7 @@ main_loop:
     cpse switch_toggled, r15
     call LCD_switch_handle
 
-; Weight
-    
-    
+; Weight    
     cpse ad_read_flag, r15; sample time 16 KHz
     call update_weight
 
@@ -221,18 +219,41 @@ LCD_switch_handle:
     cpi r16, 0b0000_0111
     brne end_sh
 
-    sbrc switch_toggled, 0
+    sbrc switch_toggled, 2
     call tare
     sbrc switch_toggled, 1
-    ldi r16, 'B'
-    sbrc switch_toggled, 2
-    ldi r16, 'C'
-    call lcd_char
-    
+    call set_lb
+    sbrc switch_toggled, 0
+    call set_kg
+
     clr switch_toggled
 end_sh:
 ret
-
+    
+set_lb:
+    ldi r16, 0
+    ldi r17, 15
+    call LCD_position_cursor
+    
+    ldi r16, 'l'
+    call LCD_char
+    ldi r16, 'b'
+    call LCD_char
+    call set_LUT_lb
+ret
+    
+set_kg:
+    ldi r16, 0
+    ldi r17, 15
+    call LCD_position_cursor
+    
+    ldi r16, 'k'
+    call LCD_char
+    ldi r16, 'g'
+    call LCD_char
+    call set_LUT_kg
+ret
+    
 tare:
     call AD_read
     movw TAREH:TAREL, r17:r16
