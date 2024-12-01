@@ -1,17 +1,17 @@
 .cseg
-.org 0x00                
+.org 0x0000                
     jmp init          
-.org 0x06
+.org 0x0006
     jmp switch_isr  ; PCI2 interrupt service routine
-.org 0x01C
+.org 0x001C
     jmp OCR0A_isr
     jmp OCR0B_isr
     jmp TOV0_isr
-    
-.org 0x02A
+.org 0x002A
     jmp ADC_isr
-.org 0x034
+.org 0x0034
 
+#include "LUT.asm"
 #include "AD_config.asm"
 #include "LCD_control.asm"
 #include "Switches.asm"
@@ -41,39 +41,41 @@ main:
     clr TAREH
     clr TAREL
 
+    call set_LUT_kg
+    
     sei
 main_loop:
     cpse switch_toggled, r15
     call LCD_switch_handle
 
 ; Weight
-
-    cpse tc0_overflow, r15; sample time 16 KHz
+    
+    
+    cpse ad_read_flag, r15; sample time 16 KHz
     call update_weight
 
 rjmp main_loop
 
 update_weight:
+    cli
+    
     ldi r16, 0
     ldi r17, 6
     call LCD_position_cursor
 
-    ;call AD_read
-
-    movw r17:r16, ADH:ADL
     call AD_tare
-        
-    call dubble_dabble
-    call LCD_write_weight 
-
+    call LCD_write_LUT_weight
+    
     mov r16, row
     mov r17, column
     call LCD_position_cursor
 
-    clr tc0_overflow
+    clr ad_read_flag
+    
+    sei
 ret
 
-; dubble_dabble for 10 bits left justfied
+; dubble_dabble for 10 bits right justfied
 ; load I/O in r17 (high) and r16 (low)
 dubble_dabble:
     push r20
@@ -179,6 +181,39 @@ LCD_write_weight:
 
 ret
 
+LCD_write_LUT_weight:
+    mov r16, TARE_sign
+    call LCD_char
+    
+    push zl
+    push zh
+    ldi r16, LUT_str_len ; 2 characters/byte
+    
+    ; program memory shift
+    lsl ADL 
+    rol ADH
+    
+    ; multiply index (ADC) by string lenght (4 bytes)
+    mul ADL, r16
+    add ZL, r0
+    adc ZH, r1
+    
+    mul ADH, r16
+    add ZH, r0
+    
+    write_LUT_loop:
+	lpm r16, Z+
+	cpi r16, 0
+	brne write_LUT
+
+	pop zh 
+        pop zl
+	ret
+
+    write_LUT:    
+	call LCD_char
+	rjmp write_LUT_loop
+  
 LCD_switch_handle:
     
     in r16, pinb
@@ -204,24 +239,22 @@ tare:
 ret
 
 AD_tare:
-    ldi TARE_SIGN, ' '
-
-
-    cp r16, TAREL
-    cpc  r17, TAREH
+    cp ADL, TAREL
+    cpc  ADH, TAREH
     brlo tare_negative
 
-tare_positve:    
-    sub r16, TAREL
-    sbc r17, TAREH
+tare_positve:   
+    sub ADL, TAREL
+    sbc ADH, TAREH
     
-    ret
+    ldi TARE_SIGN, ' '
+ret
 
 tare_negative:
-    movw r19:r18, r17:r16    
     movw r17:r16, TAREH:TAREL
-    sub r16, r18
-    sbc r17, r19
+    sub r16, ADL
+    sbc r17, ADH
+    movw ADH:ADL, r17:r16
 
     ldi TARE_SIGN, '-'
 ret
@@ -239,3 +272,4 @@ LCD_select:
 ;    breq LED3
 
     ret
+

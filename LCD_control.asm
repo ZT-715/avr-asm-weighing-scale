@@ -21,7 +21,7 @@
 .equ LINHA_4 = 0x54
 
 .cseg
-DISPLAY_TXT: .db " Peso: 00.00 Kg",0," ",0," ",0," TARE  Kg/Oz  Reg. ",0,0,0
+DISPLAY_TXT: .db " Peso: 0000000  Kg",0," ",0," ",0," TARE         Kg/Lb ",0,0,0
 
 LCD_init:
     ldi r16, 0xFF
@@ -145,10 +145,7 @@ LCD_char:
     sbi PORTD, RS
     rcall LCD_4bits
     mov r16, r20
-    lsl r16
-    lsl r16
-    lsl r16
-    lsl r16 ; change switch with 4 'lsl' by nibble 'swap'
+    swap r16
     andi r16, 0b1111_0000
     rcall LCD_4bits
     cbi PORTD, RS
@@ -162,10 +159,7 @@ LCD_command:
     andi r16, 0b1111_0000
     rcall LCD_4bits
     mov r16, r20
-    lsl r16
-    lsl r16
-    lsl r16
-    lsl r16
+    swap r16
     andi r16, 0b1111_0000
     rcall LCD_4bits
     pop r20

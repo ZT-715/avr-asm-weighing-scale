@@ -1,3 +1,4 @@
+.def ad_read_flag = r25
 .def ADH = r3
 .def ADL = r2
 
@@ -50,6 +51,10 @@ AD_read:
 ret
 
 ADC_isr:
+    sbrs ad_read_flag, 0
     lds ADL, ADCL
+    sbrs ad_read_flag, 0
     lds ADH, ADCH
+    
+    ldi ad_read_flag, 0xff
 reti
