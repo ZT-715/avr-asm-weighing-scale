@@ -52,19 +52,20 @@ LCD_init:
 
         inc row
 
-        lpm r16, Z
-        ldi r17, 0
-        cp r16, r17 ; se fim de linha duplo
-        brne screen0_loop
-        ret
-
     screen0_loop:
         lpm r16, Z+
         cpi r16, 0
-        breq screen0
+	breq screen0_endline
+
         rcall LCD_char
 
         rjmp screen0_loop
+
+    screen0_endline:
+        lpm r17, Z
+        cpse r16, r17 ; se fim de linha duplo
+        rjmp screen0
+        ret
 
 ; r16 recives line 0-3
 ; r17 receives column 0-20
