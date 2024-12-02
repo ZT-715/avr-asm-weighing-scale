@@ -59,6 +59,7 @@ update_weight:
     ldi r17, 6
     call LCD_position_cursor
 
+    sbrs ADH, 1
     call AD_tare
     call LCD_write_LUT_weight
     
