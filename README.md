@@ -1,4 +1,4 @@
-### README for AVR Microcontroller-Based Load Cell System
+### AVR Microcontroller-Based Load Cell System
 
 #### Project Overview
 This project demonstrates a microcontroller-based digital weighing system using an **ATMEGA328P**, developed entirely in **AVR-ASM**. The system features:
