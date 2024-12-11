@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "LCD20x4")(type "KiCad")(uri "${LCD20X4}/LCD-20X4B.kicad_sym")(options "")(descr ""))
+)

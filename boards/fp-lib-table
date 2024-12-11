@@ -1,0 +1,7 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "LCD-20X4B")(type "KiCad")(uri "${KIPRJMOD}/LCD-20X4B.pretty")(options "")(descr ""))
+  (lib (name "KRE_2_vias")(type "KiCad")(uri "${KIPRJMOD}/KRE_2_vias.pretty")(options "")(descr ""))
+  (lib (name "DIP28_SOCKET")(type "KiCad")(uri "${KIPRJMOD}/DIP28_SOCKET")(options "")(descr ""))
+  (lib (name "DIP_28_W_SOCKET")(type "KiCad")(uri "${KIPRJMOD}/DIP_28_W_SOCKET.pretty")(options "")(descr ""))
+)
