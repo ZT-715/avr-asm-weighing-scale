@@ -1,13 +1,10 @@
 ### AVR Microcontroller-Based Load Cell System
 
-#### Project Overview
+#### Project Overview and Highlights
 This project demonstrates a microcontroller-based digital weighing system using an **ATMEGA328P**, developed entirely in **AVR-ASM**. The system features two custom-designed PCBs:
 - ATMEGA328p devboard: 20x4 LCD, 3 buttons to show information in kilograms, pounds, and use the tare function, A/D AVcc filter, and an ICSP (In-Circuit Serial Programming).
 - High-gain instrumental amplifier: allows weight measurement down to 5 kg ± 5g with a 30 Kg weight cell on the same 7.5V power source as the devboard, with noise filters to maximize A/D range and precision.
-
-#### System Design Highlights
 - All assembly routines are structured into independent files like timer, ADC, and display control routines.
-- 2 Custom-designed PCBs, an ATMEGA328P devboard, and an instrumental amplifier with noise filtering.
 - Even with TARE, the system shows "OVRW" indicator for overload scenarios.
 
 ![alt text](https://github.com/ZT-715/avr_asm_weighing_scale/blob/main/Boards.png?raw=true)
