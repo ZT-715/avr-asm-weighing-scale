@@ -4,7 +4,7 @@
 This project demonstrates a microcontroller-based digital weighing system using an **ATMEGA328P**, developed entirely in **AVR-ASM**. The system features:
 - Custom-designed PCBs: the ATMEGA328p devboard.
 - A 20x4 LCD with 3 configured buttons to show information in kilograms, pounds, and use the tare function.
-- High gain amplifier with noise filtes to maximize A/D range and precision, allows weight measure down to 5 kg ± 10g with a 30 Kg weight cell, all on the same 7.5V power source of the devboard.
+- High gain amplifier with noise filtes to maximize A/D range and precision, allows weight measure down to 5 kg ± 5g with a 30 Kg weight cell, all on the same 7.5V power source of the devboard.
 
 ![alt text](https://github.com/ZT-715/avr_asm_weighing_scale/blob/main/Boards.png?raw=true)
 
