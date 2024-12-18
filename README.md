@@ -2,9 +2,9 @@
 
 #### Project Overview
 This project demonstrates a microcontroller-based digital weighing system using an **ATMEGA328P**, developed entirely in **AVR-ASM**. The system features:
-- Custom-designed PCBs: the ATMEGA328p devboard.
-- A 20x4 LCD with 3 configured buttons to show information in kilograms, pounds, and use the tare function.
-- High gain amplifier with noise filtes to maximize A/D range and precision, allows weight measure down to 5 kg ± 5g with a 30 Kg weight cell, all on the same 7.5V power source of the devboard.
+- Custom-designed PCBs:
+- ATMEGA328p devboard: a 20x4 LCD, 3 buttons to show information in kilograms, pounds, and use the tare function, A/D AVcc filter and SPI.
+- High gain instrumental amplifier: allows weight measure down to 5 kg ± 5g with a 30 Kg weight cell on the same 7.5V power source of the devboard, with noise filtes to maximize A/D range and precision.
 
 ![alt text](https://github.com/ZT-715/avr_asm_weighing_scale/blob/main/Boards.png?raw=true)
 
@@ -12,13 +12,13 @@ This project demonstrates a microcontroller-based digital weighing system using 
 #### Key Features
 1. **Microcontroller and Programming:**
    - Developed using AVRASM2 assembler within MPLab IDE.
-   - Programmed with USB-ASP and custom-designed serial programming connector.
+   - Programmed with USB-ASP and serial programming connector.
 2. **Load Cell Signal Amplification:**
    - Differential output signal amplified with adjustable gain up to 3000 for
      scale adjustment.
    - Offset compensation to overcome amp. op. dead zone around 1V from GND.
 4. **ADC Integration:**
-   - Full range of 10-bit ADC of the ATMEGA328P.
+   - 80%  range of 10-bit ADC of the ATMEGA328P (1-5 volts).
    - Conversion synchronized with Timer 1 for consistent 1 LCD update per
      second.
    - Filtering implemented as by manufacturer instructions on AVcc to reduce noise.
