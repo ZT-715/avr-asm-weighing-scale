@@ -4,7 +4,7 @@
 This project demonstrates a microcontroller-based digital weighing system using an **ATMEGA328P**, developed entirely in **AVR-ASM**. The system features:
 - Custom-designed PCBs: the ATMEGA328p devboard.
 - A 20x4 LCD with 3 configured buttons to show information in kilograms, pounds, and use the tare function.
-- High gain amplifier with noise filtes to maximize A/D range and precision, allowind weight measure down to 5 kg with a 30 Kg weight cell, all on the same 7.5V power source of the devboard.
+- High gain amplifier with noise filtes to maximize A/D range and precision, allows weight measure down to 5 kg ± 10g with a 30 Kg weight cell, all on the same 7.5V power source of the devboard.
 
 ![alt text](https://github.com/ZT-715/avr_asm_weighing_scale/blob/main/Boards.png?raw=true)
 
@@ -34,7 +34,8 @@ This project demonstrates a microcontroller-based digital weighing system using 
 #### Results and Next Steps
 ![alt text](https://github.com/ZT-715/avr_asm_weighing_scale/blob/main/Final_test.jpg?raw=true)
 
-The system accurately measures weights within the defined range and switches between units seamlessly. Future improvements include integrating all components into a single PCB, replacing the LCD with a smaller display, and designing a housing for the system.
+The system accurately measures weights within the defined range and switches between lbs ans kgs seamlessly.
+Future improvements include integrating all components into a single PCB, replacing the LCD with a smaller display, and designing a housing for the system. The system could also be battery-powered by utilizing the ATMEGA328P's sleep states effectively.
 
 #### References
 1. [Microchip AVR Microcontroller Hardware Design Considerations](https://ww1.microchip.com/downloads/en/Appnotes/AN2519-AVR-Microcontroller-Hardware-Design-Considerations-00002519B.pdf)
